@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :solidus_conekta do
+# task :spree_conekta do
 #   # Task goes here
 # end

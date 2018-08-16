@@ -7,7 +7,7 @@ module Spree
       attr_accessible :preferred_auth_token, :preferred_source_method, :gateway_response
     end
 
-    if SolidusSupport.solidus_gem_version < Gem::Version.new('2.3.x')
+    if SpreeSupport.spree_gem_version < Gem::Version.new('2.3.x')
       def provider_class
        Spree::Conekta::Provider
       end

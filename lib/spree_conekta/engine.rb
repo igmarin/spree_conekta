@@ -1,9 +1,9 @@
-module SolidusConekta
+module SpreeConekta
   class Engine < ::Rails::Engine
     require 'spree'
     isolate_namespace Spree
 
-    engine_name 'solidus_conekta'
+    engine_name 'spree_conekta'
 
     # use rspec for tests
     config.generators do |g|
@@ -12,7 +12,7 @@ module SolidusConekta
 
     if Rails.version >= '3.1'
       initializer :assets do |config|
-        Rails.application.config.assets.precompile += %w( solidus_conekta.js )
+        Rails.application.config.assets.precompile += %w( spree_conekta.js )
       end
     end
 
@@ -23,7 +23,7 @@ module SolidusConekta
       app.config.spree.payment_methods << Spree::BillingIntegration::ConektaGateway::MonthlyPayment
     end
 
-    initializer 'solidus_conekta.assets.precompile' do |app|
+    initializer 'spree_conekta.assets.precompile' do |app|
       app.config.assets.precompile += %w( spree/backend/print.css )
     end
 

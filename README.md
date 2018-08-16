@@ -1,4 +1,4 @@
-# Solidus Conekta
+# Spree Conekta
 Credit to https://github.com/InstafitGlobal/spree_conekta
 https://github.com/AgilTec/spree_conekta
 https://github.com/crowdint/spree_conekta
@@ -9,14 +9,14 @@ Setup
 Add this extension to your Gemfile:
 
 ```ruby
-gem 'solidus_conekta', github: 'jtapia/solidus_conekta'
+gem 'spree_conekta', github: 'jtapia/spree_conekta'
 ```
 
 Then run:
 
 ```
 bundle
-rails g solidus_conekta:install
+rails g spree_conekta:install
 ```
 
 ##Setup Conekta Payments
