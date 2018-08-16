@@ -1,7 +1,7 @@
 require 'spree_core'
 require 'spree_backend'
 require 'spree_frontend'
-require 'spree_support'
+#require 'spree_support'
 require 'nokogiri'
 require 'typhoeus/adapters/faraday'
 require 'faraday'

@@ -24,7 +24,7 @@ RSpec.describe "Conekta checkout", type: :feature do
 
     allow(order).to receive(:total).and_return(2000)
 
-    Spree::PaymentMethod.destroy_all
+    Gateway.destroy_all
 
     allow_any_instance_of(Spree::CheckoutController).to receive(:current_order).and_return(order)
     allow_any_instance_of(Spree::CheckoutController).to receive(:try_spree_current_user).and_return(user)

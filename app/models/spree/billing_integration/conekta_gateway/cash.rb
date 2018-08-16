@@ -1,5 +1,5 @@
 module Spree
-  class BillingIntegration::ConektaGateway::Cash < Spree::PaymentMethod
+  class BillingIntegration::ConektaGateway::Cash < Gateway
     preference :auth_token, :string
     preference :source_method, :string, default: 'oxxo'
 
@@ -7,23 +7,6 @@ module Spree
       attr_accessible :preferred_auth_token, :preferred_source_method, :gateway_response
     end
 
-    if SpreeSupport.spree_gem_version < Gem::Version.new('2.3.x')
-      def provider_class
-       Spree::Conekta::Provider
-      end
-
-      def method_type
-        'conekta'
-      end
-    else
-      def gateway_class
-       Spree::Conekta::Provider
-      end
-
-      def partial_name
-        'conekta'
-      end
-    end
 
     def payment_source_class
       Spree::ConektaPayment
