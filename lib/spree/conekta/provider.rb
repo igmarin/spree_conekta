@@ -63,38 +63,16 @@ module Spree::Conekta
     end
 
     def build_common(amount, gateway_params)
-      if Spree::Conekta.api_version == "2.0.0"
-        if source_method == Spree::Conekta::PaymentSource::Cash && gateway_params[:currency] != 'MXN'
-          return build_common_to_cash(amount, gateway_params)
-        else
-          {
-            line_items:       line_items(gateway_params, amount),
-            id:               gateway_params[:order_id],
-            livemode:         !@options[:test_mode],
-            object:           "order",
-            amount:           amount,
-            payment_status:   "pending_payment",
-            currency:         gateway_params[:currency],
-            shipping_lines:   [shipment(gateway_params)],
-            shipping_contact: shipping_contact(gateway_params),
-            customer_info:    customer_info(gateway_params),
-            created_at:       @order.created_at,
-            updated_at:       @order.updated_at,
-            charges:          build_charge(amount, gateway_params)
-          }
-        end
+      if source_method == Spree::Conekta::PaymentSource::Cash && gateway_params[:currency] != 'MXN'
+        return build_common_to_cash(amount, gateway_params)
       else
-        if source_method == Spree::Conekta::PaymentSource::Cash && gateway_params[:currency] != 'MXN'
-          return build_common_to_cash(amount, gateway_params)
-        else
-          {
-            'amount'               => amount,
-            'reference_id'         => gateway_params[:order_id],
-            'currency'             => gateway_params[:currency],
-            'description'          => gateway_params[:order_id],
-            'details'              => details(gateway_params)
-          }
-        end
+        {
+          'amount'               => amount,
+          'reference_id'         => gateway_params[:order_id],
+          'currency'             => gateway_params[:currency],
+          'description'          => gateway_params[:order_id],
+          'details'              => details(gateway_params)
+        }
       end
     end
 
