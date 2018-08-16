@@ -10,3 +10,4 @@ spec/dummy/db/migrate/
 .idea
 .#*
 tmp/**
+.DS_Store

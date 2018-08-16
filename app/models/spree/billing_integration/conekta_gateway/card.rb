@@ -8,9 +8,16 @@ module Spree
       attr_accessible :preferred_auth_token, :preferred_public_auth_token, :preferred_source_method, :gateway_response
     end
 
+    def gateway_class
+      Spree::Conekta::Provider
+    end
 
     def payment_source_class
       CreditCard
+    end
+
+    def partial_name
+      'conekta_card'
     end
 
     def card?
@@ -23,6 +30,10 @@ module Spree
 
     def with_installments?
       false
+    end
+
+    def method_type
+      'conekta_card'
     end
   end
 end
