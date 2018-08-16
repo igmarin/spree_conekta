@@ -63,7 +63,7 @@ module Spree::Conekta
     end
 
     def build_common(amount, gateway_params)
-      if Conekta.api_version == "2.0.0"
+      if Spree::Conekta.api_version == "2.0.0"
         if source_method == Spree::Conekta::PaymentSource::Cash && gateway_params[:currency] != 'MXN'
           return build_common_to_cash(amount, gateway_params)
         else
