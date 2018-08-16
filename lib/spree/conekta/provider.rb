@@ -7,10 +7,10 @@ module Spree::Conekta
     attr_reader :options
 
     PAYMENT_SOURCES = {
-        'card' => Spree::Conekta::PaymentSource::Card,
-        'banorte' => Spree::Conekta::PaymentSource::Bank,
-        'spei' => Spree::Conekta::PaymentSource::Bank,
-        'oxxo' => Spree::Conekta::PaymentSource::Cash
+      'card' => Spree::Conekta::PaymentSource::Card,
+      'banorte' => Spree::Conekta::PaymentSource::Bank,
+      'spei' => Spree::Conekta::PaymentSource::Bank,
+      'oxxo' => Spree::Conekta::PaymentSource::Cash
     }
 
     def initialize(options = {})
@@ -67,15 +67,6 @@ module Spree::Conekta
       end
     end
 
-    def customer_info(gateway_params)
-      {
-        'object'          => "customer_info",
-        'name'            => gateway_params[:billing_address][:name],
-        'email'           => gateway_params[:email],
-        'phone'           => gateway_params[:billing_address][:phone],
-      }
-    end
-
     def details(gateway_params)
       {
         'name'            => gateway_params[:billing_address][:name],
@@ -94,7 +85,7 @@ module Spree::Conekta
         'city'    => gateway_params[:shipping_address][:city],
         'state'   => gateway_params[:shipping_address][:state],
         'country' => gateway_params[:shipping_address][:country],
-        'postal_code'     => gateway_params[:shipping_address][:zip]
+        'zip'     => gateway_params[:shipping_address][:zip]
       }
     end
 
@@ -110,63 +101,22 @@ module Spree::Conekta
       }
     end
 
-    def build_charge(amount, gateway_params)
-      [{
-        object:         "charge",
-        livemode:       !@options[:test_mode],
-        created_at:     @order.created_at,
-        currency:       gateway_params[:currency],
-        status:         "pending_payment",
-        amount:         amount + gateway_params[:shipping].to_i,
-        fee:            gateway_params[:tax],
-        customer_id:    "",
-        order_id:       "",
-        payment_method: options[:source_method] == "oxxo" ?
-        oxxo_payment_method(gateway_params) :
-        card_payment_method(gateway_params)
-      }]
-    end
-
-    def oxxo_payment_method(gateway_params)
-      {
-        service_name:   "OxxoPay",
-        object:         "cash_payment",
-        type:           "oxxo_cash",
-        expires_at:     (@order.created_at + 30.days).to_i,
-        store_name:     "OXXO",
-        reference:      gateway_params[:order_id]
-      }
-    end
-
-    def card_payment_method(gateway_params)
-      {
-        service_name:   "card",
-        type:           "card",
-      }
-    end
-
     def line_items(gateway_params)
       order = Spree::Order.find_by_number(gateway_params[:order_id].split('-').first)
       order.line_items.map(&:to_conekta)
     end
 
     def shipment(gateway_params)
-      @order = Spree::Order.find_by_number(gateway_params[:order_id].split('-').first)
-      shipment = @order.shipments[0]
+      order = Spree::Order.find_by_number(gateway_params[:order_id].split('-').first)
+      shipment = order.shipments[0]
       carrier = (shipment.present? ? shipment.shipping_method.name : "other")
       traking_id = (shipment.present? ? shipment.tracking : nil)
       {
-        :amount       => gateway_params[:shipping].to_i,
-        :address      => shipping_address(gateway_params),
-        :service      => "other",
-        :carrier      => carrier,
-        :tracking_id  => traking_id
-      }
-    end
-
-    def shipping_contact(gateway_params)
-      {
-        :address      => shipping_address(gateway_params),
+        'price'   => gateway_params[:shipping],
+        'address' => shipping_address(gateway_params),
+        'service'     => "other",
+        'carrier'     => carrier,
+        'tracking_id'  => traking_id
       }
     end
 
