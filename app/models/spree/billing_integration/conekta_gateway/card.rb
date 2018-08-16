@@ -1,5 +1,5 @@
 module Spree
-  class BillingIntegration::ConektaGateway::Card < PaymentMethod::CreditCard
+  class BillingIntegration::ConektaGateway::Card < Gateway
     preference :auth_token, :string
     preference :public_auth_token, :string
     preference :source_method, :string, default: 'card'
