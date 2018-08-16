@@ -1,7 +1,7 @@
 # Spree Conekta
-[![Code Climate](https://codeclimate.com/github/AgilTec/spree_conekta.png)](https://codeclimate.com/github/AgilTec/spree_conekta)
-[![Build Status](https://travis-ci.org/AgilTec/spree_conekta.png?branch=2.4.0.rc3)](https://travis-ci.org/AgilTec/spree_conekta)
-[![Gem Version](https://badge.fury.io/rb/spree_conekta.png)](http://badge.fury.io/rb/spree_conekta)
+Credit to https://github.com/InstafitGlobal/spree_conekta
+https://github.com/AgilTec/spree_conekta
+https://github.com/crowdint/spree_conekta
 
 Setup
 -----

@@ -2,6 +2,7 @@ module Spree::Conekta::PaymentSource
   module Card
     def request(common, method, gateway_options)
       common['card'] = method.gateway_payment_profile_id
+      common[:charges].first[:payment_method][:token_id] = common['card']
       common['monthly_installments'] = installments_number(method)
     end
 

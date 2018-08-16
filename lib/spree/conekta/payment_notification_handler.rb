@@ -7,13 +7,14 @@ module Spree
 
       attr_reader :params, :action, :order, :delay
 
-      ACTIONS = Hash.new(:failure!).merge! 'charge.paid' => :capture!
+      ACTIONS = Hash.new(:failure!).merge! 'order.paid' => :capture!
 
       def initialize(params, delay = 60)
         @params = params
         @delay  = delay
         @action = ACTIONS[params['type']]
-        @order  = params['data']['object']['reference_id'].split('-').first
+        @order  = params['data'] ? params['data']['object']['id'].split('-').last :
+                                   params['id']
       end
 
       def perform_action
@@ -28,7 +29,7 @@ module Spree
 
       def payment
         ActiveRecord::Base.connection_pool.with_connection do
-          Spree::Payment.find_by_order_number(order)
+          Spree::Payment.find_by_number(order)
         end
       end
     end

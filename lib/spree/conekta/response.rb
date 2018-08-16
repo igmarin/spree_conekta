@@ -7,7 +7,7 @@ module Spree::Conekta
       @message = @success ? 'Ok' : response['message']
       @params = response
       @params['message'] = @success ? 'Ok' : response['message_to_purchaser']
-      @status = response['status']
+      @status = response['payment_status'] || response['status']
       @source_method = source_method
     end
   end

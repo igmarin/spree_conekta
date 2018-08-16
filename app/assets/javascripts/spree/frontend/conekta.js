@@ -235,15 +235,18 @@
             for (i = _k = 0, _ref1 = inputs.length - 1; _k <= _ref1; i = _k += 1) {
               all_inputs[i + textareas.length] = inputs[i];
             }
-            for (i = _l = 0, _ref2 = selects.length - 1; _l <= _ref2; i = _l += 1) {
-              all_inputs[i + textareas.length + inputs.length] = selects[i];
-            }
+            // Los select contienen el valor del mes y año de la fecha actual,
+            // el cual hace un override a los inputs seleccionados por el
+            // cliente... basura de codigo de conekta
+            //for (i = _l = 0, _ref2 = selects.length - 1; _l <= _ref2; i = _l += 1) {
+            //  all_inputs[i + textareas.length + inputs.length] = selects[i];
+            //}
             for (_m = 0, _len = all_inputs.length; _m < _len; _m++) {
               input = all_inputs[_m];
               if (input) {
                 attribute_name = input.getAttribute('data-conekta');
                 if (attribute_name) {
-                  if (input.tagName === 'SELECT') {
+                  if (input.tagName === 'INPUT') {
                     val = input.value;
                   } else {
                     val = input.getAttribute('value') || input.innerHTML || input.value;
@@ -555,7 +558,7 @@
     var month, year;
     month = parseMonth(exp_month);
     year = parseYear(exp_year);
-    if ((typeof month === 'number' && month > 0 && month < 13) && (typeof year === 'number' && year > 2013 && year < 2035)) {
+    if ((typeof month === 'number' && month > 0 && month < 13) && (typeof year === 'number' && year > 2017 && year < 2040)) {
       return Date.parse(month + '/' + new Date(year, month, 0).getDate() + '/' + year) > Date.now();
     } else {
       return false;
