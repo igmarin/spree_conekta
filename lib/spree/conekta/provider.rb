@@ -84,7 +84,7 @@ module Spree::Conekta
         'street2' => gateway_params[:shipping_address][:address2],
         'city'    => gateway_params[:shipping_address][:city],
         'state'   => gateway_params[:shipping_address][:state],
-        'country' => gateway_params[:shipping_address][:country],
+        'country' => 'MX',
         'zip'     => gateway_params[:shipping_address][:zip]
       }
     end
@@ -96,7 +96,7 @@ module Spree::Conekta
         'street2' => gateway_params[:billing_address][:address2],
         'city'    => gateway_params[:billing_address][:city],
         'state'   => gateway_params[:billing_address][:state],
-        'country' => gateway_params[:billing_address][:country],
+        'country' => 'MX',
         'zip'     => gateway_params[:billing_address][:zip]
       }
     end
