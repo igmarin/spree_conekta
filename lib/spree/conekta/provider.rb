@@ -82,7 +82,7 @@ module Spree::Conekta
         'email'           => gateway_params[:email],
         'phone'           => gateway_params[:billing_address][:phone],
         'billing_address' => billing_address(gateway_params),
-        'line_items'      => line_items(gateway_params, amount),
+        'line_items'      => line_items(gateway_params),
         'shipment'        => shipment(gateway_params)
       }
     end
@@ -145,15 +145,9 @@ module Spree::Conekta
       }
     end
 
-    def line_items(gateway_params, amount)
-      line_items = @order.line_items.map(&:to_conekta)
-      real_total = line_items.inject(0){|sum, item| item[:unit_price]}
-      unless amount == real_total
-        items_count = @order.line_items.inject(0) {|sum, item| sum += item[:quantity]}
-        line_items.each{ |item| item[:unit_price] = ( amount / items_count).ceil.to_i}
-      end
-      line_items
-
+    def line_items(gateway_params)
+      order = Spree::Order.find_by_number(gateway_params[:order_id].split('-').first)
+      order.line_items.map(&:to_conekta)
     end
 
     def shipment(gateway_params)
