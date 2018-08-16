@@ -1,3 +1,5 @@
+require 'oj'
+
 module Spree::Conekta
   module Client
     CONEKTA_API = 'https://api.conekta.io/'
@@ -5,17 +7,7 @@ module Spree::Conekta
     attr_accessor :auth_token
 
     def post(params)
-      if Conekta.api_version == "2.0.0"
-        begin
-          Conekta::Order.create(params)
-        rescue Conekta::Error => error
-          for error_detail in error.details do
-            puts error_detail.message
-          end
-        end
-      else
-        Oj.load connection.post(endpoint, Oj.dump(params)).body
-      end
+      Oj.load connection.post(endpoint, Oj.dump(params)).body
     end
 
     def get
