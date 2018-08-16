@@ -5,10 +5,12 @@ es-MX:
       processing_order: Procesando su pago espere un momento
     oxxo:
       bar_code: Código de barras
+      transaction: Numero de Transacción
       payment_message: Imprime este formulario y preséntalo en el Oxxo mas cercano para realizar tu pago.
       payment_title: Pago a través de Oxxo
       total: Total
     banorte:
+      info: Información
       payment_title: Depósito en ventanilla Banorte
       service_number: Número de servicio
       reference: Referencia
@@ -20,7 +22,9 @@ es-MX:
       payment_message: Usa esta CLABE para hacer una transferencia SPEI.
     title: Información de pago
     next_step: Siguiente paso
+    order: Número de orden
     order_number: 'Número de orden: %{number}'
     print_payment_form: Imprimir ficha de pago
     total: 'Total a pagar:'
     installments_number: 'Meses sin intereses'
+    type: Tipo de Pago

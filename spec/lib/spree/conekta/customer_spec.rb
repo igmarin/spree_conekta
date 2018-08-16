@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Spree::Conekta::Customer do
-  let(:user)         { double('user', email: 'foo@example.com') }
+  let(:user) { FactoryBot.create(:user) }
   let(:credit_cards) { double('credit_cards') }
   let(:token)        { '123456' }
 
@@ -13,7 +13,7 @@ describe Spree::Conekta::Customer do
 
   context 'When the user does not has a customer associated' do
     before do
-      user.stub gateway_customer_profile_id: nil
+      expect(user).to receive(:gateway_customer_profile_id).and_return('cus_e7inii51RjUPsMbP8')
     end
 
     it 'creates a new customer' do
@@ -25,7 +25,7 @@ describe Spree::Conekta::Customer do
 
   context 'When the user has a customer associated' do
     before do
-      user.stub gateway_customer_profile_id: '123'
+      expect(user).to receive(:gateway_customer_profile_id).and_return('123')
     end
 
     it 'uses the users customer id' do
@@ -35,18 +35,18 @@ describe Spree::Conekta::Customer do
 
   describe '#add_credit_card' do
     before do
-      subject.stub credit_cards: credit_cards
+      expect(subject).to receive(:credit_cards).and_return(credit_cards)
     end
 
     it 'adds a credit card to te customer' do
-      credit_cards.should_receive(:add).with(token)
+      expect(credit_cards).to receive(:add).with(token)
       subject.add_credit_card(token)
     end
   end
 
   describe '#credit_cards' do
     before do
-      subject.stub id: 'cus_e7inii51RjUPsMbP8'
+      expect(subject).to receive(:id).and_return('cus_e7inii51RjUPsMbP8')
     end
 
     it 'fetch credit cards from conekta' do
@@ -59,5 +59,4 @@ describe Spree::Conekta::Customer do
   describe 'endpoint' do
     specify { expect(subject.endpoint).to eq 'customers' }
   end
-
 end

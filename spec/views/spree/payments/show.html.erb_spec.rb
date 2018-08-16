@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec. describe 'spree/conekta/payments/show', type: :view do
-  let(:order){ create(:order_with_totals, number: 'RT1234567', currency: 'MXN') }
+describe 'spree/conekta/payments/show' do
+  let(:order){ FactoryBot.create(:order_with_totals, number: 'RT1234567', currency: 'MXN') }
   let(:conekta_pending_response) do
     OpenStruct.new params:  {
       "id"=> "52260de18dce00317d0000ce",
@@ -84,7 +84,6 @@ RSpec. describe 'spree/conekta/payments/show', type: :view do
         "barcode"=>"38100000000042290121213001160013",
         "barcode_url"=>"https://www2.oxxo.com:8443/HTP/barcode/genbc?data=38100000000042290121213001160013&height=50&width=1&type=Code128"
       }
-
 
       allow_any_instance_of(Spree::Order).to receive(:last_payment_source).and_return('cash')
       render

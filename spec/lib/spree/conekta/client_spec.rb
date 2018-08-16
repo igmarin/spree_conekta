@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-RSpec.describe Spree::Conekta::Client, type: :model do
+describe Spree::Conekta::Client do
   subject { double('client').extend Spree::Conekta::Client }
 
   describe :headers do
-    let(:token){ 'abc12345678' }
-    let(:auth_token){ Base64.encode64(token)}
+    let(:token) { 'abc12345678' }
+    let(:auth_token) { Base64.encode64(token)}
 
     before { allow(subject).to receive(:auth_token).and_return token }
 
@@ -23,7 +23,7 @@ RSpec.describe Spree::Conekta::Client, type: :model do
     end
 
     before do
-      subject.stub_chain(:connection, :post, :body).and_return(json)
+      expect(subject).to receive_message_chain(:connection, :post, :body).and_return(json)
       allow(subject).to receive_messages(endpoint: 'charges')
     end
 

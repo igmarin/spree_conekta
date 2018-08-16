@@ -7,13 +7,13 @@ describe Spree::Conekta::MonthlyPaymentProvider do
     context 'An approved transaction' do
       let(:conekta_response) do
         {
-            status: '200',
-            message: 'OK'
+          status: '200',
+          message: 'OK'
         }.to_json
       end
 
       before do
-        source.stub conekta_response: conekta_response
+        expect(source).to receive(:conekta_response).and_return(conekta_response)
       end
 
       specify { expect(subject.authorize(2000, source, {})).to be_success }
@@ -27,7 +27,7 @@ describe Spree::Conekta::MonthlyPaymentProvider do
       end
 
       before do
-        source.stub conekta_response: conekta_response
+        expect(source).to receive(:conekta_response).and_return(conekta_response)
       end
 
       specify { expect(subject.authorize(2000, source, {})).to_not be_success }

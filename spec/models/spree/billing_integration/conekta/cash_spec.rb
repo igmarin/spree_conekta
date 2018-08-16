@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe Spree::BillingIntegration::ConektaGateway::Cash, type: :model do
-  describe '#provider_class' do
-    specify { expect(subject.provider_class).to eq Spree::Conekta::Provider }
+describe Spree::BillingIntegration::ConektaGateway::Cash do
+  describe '#gateway_class' do
+    specify { expect(subject.gateway_class).to eq Spree::Conekta::Provider }
   end
 
   describe '#payment_source_class' do
@@ -19,5 +19,9 @@ RSpec.describe Spree::BillingIntegration::ConektaGateway::Cash, type: :model do
 
   describe '#method_type' do
     specify { expect(subject.method_type).to eq 'conekta' }
+  end
+
+  describe '#partial_name' do
+    specify { expect(subject.partial_name).to eq 'conekta' }
   end
 end

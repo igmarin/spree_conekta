@@ -1,4 +1,4 @@
-FactoryGirl.modify do
+FactoryBot.modify do
   puts "factory :price"
   factory :price, class: Spree::Price do
     variant

@@ -1,4 +1,4 @@
-# Spree Conekta
+# Solidus Conekta
 Credit to https://github.com/InstafitGlobal/spree_conekta
 https://github.com/AgilTec/spree_conekta
 https://github.com/crowdint/spree_conekta
@@ -9,14 +9,14 @@ Setup
 Add this extension to your Gemfile:
 
 ```ruby
-gem 'spree_conekta', github: 'conekta/spree_conekta', branch: '3-0-stable'
+gem 'solidus_conekta', github: 'jtapia/solidus_conekta'
 ```
 
 Then run:
 
 ```
 bundle
-rails g spree_conekta:install
+rails g solidus_conekta:install
 ```
 
 ##Setup Conekta Payments
@@ -68,12 +68,8 @@ You can configurate the options for number of installements and default creating
 
 **Important Note:** This extension only works with ruby 2.0+.
 
-# About the Author
-
-[Crowd Interactive](http://www.crowdint.com) is an American web design and development company that happens to work in Colima, Mexico.
-We specialize in building and growing online retail stores. We don’t work with everyone – just companies we believe in. Call us today to see if there’s a fit.
-
 ## Contributors
+  * Jonathan Tapia
   * Jonathan Garay
   * Fernando Cuauhtemoc Barajas Chavez
   * Herman Moreno

@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-RSpec.describe Spree::Conekta::Provider, type: :model do
+describe Spree::Conekta::Provider do
   describe 'payment_procesor' do
     context 'the payment source is card' do
       it { expect(subject.payment_processor('card')).to be(Spree::Conekta::PaymentSource::Card) }
     end
 
     context 'the payment source is bank' do
-      it { expect(subject.payment_processor('bank')).to be(Spree::Conekta::PaymentSource::Bank) }
+      it { expect(subject.payment_processor('banorte')).to be(Spree::Conekta::PaymentSource::Bank) }
     end
 
     context 'the payment source is cash' do
-      it { expect(subject.payment_processor('cash')).to be(Spree::Conekta::PaymentSource::Cash) }
+      it { expect(subject.payment_processor('oxxo')).to be(Spree::Conekta::PaymentSource::Cash) }
     end
   end
 
@@ -24,17 +24,34 @@ RSpec.describe Spree::Conekta::Provider, type: :model do
   end
 
   describe '#authorize' do
+    let(:variant) { FactoryBot.create(:variant) }
+    let(:shipment) { FactoryBot.create(:shipment) }
+    let(:line_item) { FactoryBot.create(:line_item, variant: variant) }
+    let(:order) { FactoryBot.build(:order, number: 'foo123', shipments: [shipment], line_items: [line_item]) }
     let(:gateway_options) do
       {
+        email: 'user@test.com',
         order_id: 'foo123',
         currency: 'MXN',
-        billing_address: {},
-        shipping_address: {},
+        billing_address: {
+          name: 'User Test',
+          phone: '123123232'
+        },
+        shipping_address: {
+          address1: 'Fake St.',
+          address2: '',
+          city: 'San Francisco',
+          state: 'California',
+          country: 'US',
+          zip: '94104'
+        },
+        shipping: 10.00,
       }
     end
 
     before do
       subject.auth_token = '1tv5yJp3xnVZ7eK67m4h'
+      expect(Spree::Order).to receive(:find_by_number).and_return(order).twice
     end
 
     context 'When a credit card' do
@@ -50,8 +67,7 @@ RSpec.describe Spree::Conekta::Provider, type: :model do
       end
 
       before do
-        subject.stub source_method: Spree::Conekta::PaymentSource::Card
-        subject.stub line_items: [{ name: 'foo', description: 'var' }]
+        expect(subject).to receive(:source_method).and_return(Spree::Conekta::PaymentSource::Card).at_least(:once)
       end
 
       it 'authorizes a transaction' do
@@ -65,8 +81,7 @@ RSpec.describe Spree::Conekta::Provider, type: :model do
       let(:method_params) { {} }
 
       before do
-        subject.stub source_method: Spree::Conekta::PaymentSource::Bank
-        subject.stub line_items: [{ name: 'foo', description: 'var' }]
+        expect(subject).to receive(:source_method).and_return(Spree::Conekta::PaymentSource::Bank).at_least(:once)
       end
 
       it 'authorizes a transaction' do
@@ -80,8 +95,7 @@ RSpec.describe Spree::Conekta::Provider, type: :model do
       let(:method_params) { {} }
 
       before do
-        subject.stub source_method: Spree::Conekta::PaymentSource::Cash
-        subject.stub line_items: [{ name: 'foo', description: 'var' }]
+        expect(subject).to receive(:source_method).and_return(Spree::Conekta::PaymentSource::Cash).at_least(:once)
       end
 
       it 'authorizes a transaction' do

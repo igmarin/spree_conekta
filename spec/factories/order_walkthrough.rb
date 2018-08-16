@@ -1,32 +1,39 @@
 class OrderWalkthrough
   def self.up_to(state)
-    # A payment method must exist for an order to proceed through the Address state
-    unless Spree::PaymentMethod.exists?
-      FactoryGirl.create(:check_payment_method)
-    end
+    new.up_to(state)
+  end
 
+  def up_to(state)
     # Need to create a valid zone too...
-    zone = FactoryGirl.create(:zone)
-    country = FactoryGirl.create(:country)
-    zone.members << Spree::ZoneMember.create(:zoneable => country)
-    country.states << FactoryGirl.create(:state, :country => country)
+    @zone = FactoryBot.create(:zone)
+    @country = FactoryBot.create(:country)
+    @state = FactoryBot.create(:state, country: @country)
+
+    @zone.members << Spree::ZoneMember.create(zoneable: @country)
 
     # A shipping method must exist for rates to be displayed on checkout page
-    unless Spree::ShippingMethod.exists?
-      FactoryGirl.create(:shipping_method).tap do |sm|
-        sm.calculator.preferred_amount = 10
-        sm.calculator.preferred_currency =  'MXN'
-        sm.calculator.save
-      end
+    FactoryBot.create(:shipping_method, zones: [@zone]).tap do |sm|
+      sm.calculator.preferred_amount = 10
+      sm.calculator.preferred_currency = Spree::Config[:currency]
+      sm.calculator.save
     end
 
-    order = Spree::Order.create!(:email => "spree@example.com", currency: 'MXN')
+    order = Spree::Order.create!(
+      email: "spree@example.com",
+      store: Spree::Store.first || FactoryBot.create(:store)
+    )
     add_line_item!(order)
     order.next!
 
-    end_state_position = states.index(state.to_sym)
-    states[0..end_state_position].each do |state|
-      send(state, order)
+    states_to_process = if state == :complete
+                          states
+                        else
+                          end_state_position = states.index(state.to_sym)
+                          states[0..end_state_position]
+                        end
+
+    states_to_process.each do |state_to_process|
+      send(state_to_process, order)
     end
 
     order
@@ -34,35 +41,38 @@ class OrderWalkthrough
 
   private
 
-  def self.add_line_item!(order)
-    FactoryGirl.create(:line_item, order: order, currency: 'MXN')
+  def add_line_item!(order)
+    FactoryBot.create(:line_item, order: order)
     order.reload
   end
 
-  def self.address(order)
-    order.bill_address = FactoryGirl.create(:address, :country_id => Spree::Zone.global.members.first.zoneable.id)
-    order.ship_address = FactoryGirl.create(:address, :country_id => Spree::Zone.global.members.first.zoneable.id)
+  def address(order)
+    order.bill_address = FactoryBot.create(:address, country: @country, state: @state)
+    order.ship_address = FactoryBot.create(:address, country: @country, state: @state)
     order.next!
   end
 
-  def self.delivery(order)
+  def delivery(order)
     order.next!
   end
 
-  def self.payment(order)
-    order.payments.create!(:payment_method => Spree::PaymentMethod.first, :amount => order.total)
+  def payment(order)
+    credit_card = FactoryBot.create(:credit_card)
+    order.payments.create!(payment_method: credit_card.payment_method, amount: order.total, source: credit_card)
     # TODO: maybe look at some way of making this payment_state change automatic
     order.payment_state = 'paid'
     order.next!
   end
 
-  def self.complete(order)
-    #noop?
+  def confirm(order)
+    order.complete!
   end
 
-  def self.states
-    [:address, :delivery, :payment, :complete]
+  def complete(order)
+    # noop?
   end
 
+  def states
+    [:address, :delivery, :payment, :confirm]
+  end
 end
-

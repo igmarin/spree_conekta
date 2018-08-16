@@ -1,4 +1,4 @@
-FactoryGirl.modify do
+FactoryBot.modify do
   factory :order, class: Spree::Order do
     currency 'MXN'
   end

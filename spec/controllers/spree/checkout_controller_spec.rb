@@ -1,14 +1,12 @@
 require 'spec_helper'
 
-module Spree
-  describe CheckoutController do
-    let(:token) { 'some_token' }
-    let(:user) { stub_model(Spree::LegacyUser) }
-    let(:order) { FactoryGirl.create(:order_with_totals) }
+describe Spree::CheckoutController do
+  let(:token) { 'some_token' }
+  let(:user) { stub_model(Spree::LegacyUser) }
+  let(:order) { FactoryBot.create(:order_with_totals) }
 
-    before do
-      controller.stub try_spree_current_user: user
-      controller.stub current_order: order
-    end
+  before do
+    expect(controller).to receive(:try_spree_current_user).and_return(user)
+    expect(controller).to receive(:current_order).and_return(order)
   end
 end

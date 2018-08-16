@@ -5,6 +5,8 @@ describe Spree::Conekta::CreditCard do
   let(:auth_token) { '1tv5yJp3xnVZ7eK67m4h' }
 
   context 'A new credit card' do
+    before { expect_any_instance_of(described_class).to receive(:id).and_return(1) }
+
     it 'creates a new card' do
       VCR.use_cassette('create_credit_card') do
         @card = described_class.create(customer, 'tok_test_visa_4242', auth_token)

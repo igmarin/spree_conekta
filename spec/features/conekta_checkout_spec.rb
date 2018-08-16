@@ -4,26 +4,23 @@ Dir[File.join(File.dirname(__FILE__), "../factories/**/*.rb")].each {|f| require
 Spree::Config[:currency] = 'MXN'
 
 RSpec.describe "Conekta checkout", type: :feature do
-  let!(:country) { create(:country, states_required: true) }
-  let!(:state) { create(:state, country: country) }
-  let!(:shipping_method) { create(:shipping_method) }
-  let!(:stock_location) { create(:stock_location) }
-  let!(:mug) { create(:product, name: "RoR Mug") }
-
-  let!(:zone) { create(:zone) }
-
+  let!(:country) { FactoryBot.create(:country, states_required: true) }
+  let!(:state) { FactoryBot.create(:state, country: country) }
+  let!(:shipping_method) { FactoryBot.create(:shipping_method) }
+  let!(:stock_location) { FactoryBot.create(:stock_location) }
+  let!(:mug) { FactoryBot.create(:product, name: "RoR Mug") }
+  let!(:zone) { FactoryBot.create(:zone) }
   let!(:order) { OrderWalkthrough.up_to(:delivery) }
 
   before do
-    user = create(:user)
+    user = FactoryBot.create(:user)
 
     allow(order).to receive(:confirmation_required?).and_return(true)
 
     order.reload
     order.user = user
     order.currency = 'MXN'
-    order.update!
-
+    order.recalculate
 
     allow(order).to receive(:total).and_return(2000)
 
@@ -32,26 +29,20 @@ RSpec.describe "Conekta checkout", type: :feature do
     allow_any_instance_of(Spree::CheckoutController).to receive(:current_order).and_return(order)
     allow_any_instance_of(Spree::CheckoutController).to receive(:try_spree_current_user).and_return(user)
     allow_any_instance_of(Spree::CheckoutController).to receive(:skip_state_validation?).and_return(true)
-
   end
 
   describe "the payment source is credit card", js: true do
     before do
-
       ENV['CONEKTA_PUBLIC_KEY'] = '1tv5yJp3xnVZ7eK67m4h'
     end
 
     context 'With a valid card' do
       let!(:conekta_payment) do
-        Spree::BillingIntegration::ConektaGateway::Card.create!(
-            name: "conekta",
-            environment: "test",
-            preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h'
-        )
+        Spree::BillingIntegration::ConektaGateway::Card.create!(name: "conekta",
+                                                                preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h')
       end
 
       before do
-  
         visit spree.checkout_state_path(:payment)
 
         fill_in "Card Number", with: "4242 4242 4242 4242"
@@ -75,10 +66,6 @@ RSpec.describe "Conekta checkout", type: :feature do
         end
       end
 
-      it "can process a valid payment" do
-        expect(page).to have_content("Your order has been processed successfully")
-      end
-
       it 'should complete the payment' do
         expect(order.payments.last.state).to eq('completed')
       end
@@ -90,11 +77,8 @@ RSpec.describe "Conekta checkout", type: :feature do
 
     context 'With an invalid card' do
       let!(:conekta_payment) do
-        Spree::BillingIntegration::ConektaGateway::Card.create!(
-            name: "conekta",
-            environment: "test",
-            preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h'
-        )
+        Spree::BillingIntegration::ConektaGateway::Card.create!(name: "conekta",
+                                                                preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h')
       end
 
       before do
@@ -138,7 +122,6 @@ RSpec.describe "Conekta checkout", type: :feature do
       let!(:conekta_payment) do
         Spree::BillingIntegration::ConektaGateway::Card.create!(
             name: "conekta",
-            environment: "test",
             preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h'
         )
       end
@@ -184,7 +167,6 @@ RSpec.describe "Conekta checkout", type: :feature do
       let!(:conekta_payment) do
         Spree::BillingIntegration::ConektaGateway::Card.create!(
             name: "conekta",
-            environment: "test",
             preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h'
         )
       end
@@ -231,7 +213,6 @@ RSpec.describe "Conekta checkout", type: :feature do
     let!(:conekta_payment) do
       Spree::BillingIntegration::ConektaGateway::Cash.create!(
         name: "conekta",
-        environment: "test",
         preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h'
       )
     end
@@ -267,7 +248,6 @@ RSpec.describe "Conekta checkout", type: :feature do
     let!(:conekta_payment) do
       Spree::BillingIntegration::ConektaGateway::Bank.create!(
         name: "conekta",
-        environment: "test",
         preferred_auth_token: '1tv5yJp3xnVZ7eK67m4h'
       )
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Spree::ConektaPayment, type: :model do
+describe Spree::ConektaPayment do
   describe '#actions' do
     it { expect(subject.actions).to eql(['capture']) }
   end

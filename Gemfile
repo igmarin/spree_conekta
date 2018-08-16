@@ -1,28 +1,22 @@
-source "http://rubygems.org"
-gem 'spree', '~> 3.4.0'
-gem 'sass-rails', '~> 4.0.3'
+source 'https://rubygems.org'
 
-# Spree Internationalization https://github.com/spree/spree_i18n
-gem 'spree_i18n', git: 'https://github.com/spree-contrib/spree_i18n'
-gem 'globalize', github: 'globalize/globalize', branch: 'master'
+branch = ENV.fetch('SOLIDUS_BRANCH', 'master')
+gem 'solidus', github: 'solidusio/solidus', branch: branch
+gem 'solidus_i18n', github: 'solidusio-contrib/solidus_i18n', branch: branch
+gem 'globalize', github: 'globalize/globalize', branch: branch
 
-group :test, :development do
-  gem 'rspec-rails', '~> 3.1.0'
-  gem 'sqlite3'
-  gem 'factory_girl'
-  gem 'pry'
-  gem 'database_cleaner'
-  gem 'spork'
-  gem 'poltergeist'
-  gem 'selenium-webdriver'
-  gem 'capybara-webkit'
-  gem 'capybara'
-  gem 'vcr'
+if branch == 'master' || branch >= 'v2.0'
+  gem 'rails-controller-testing', group: :test
+else
+  gem 'rails_test_params_backport', group: :test
 end
 
-group :test do
-  gem 'ffaker'
-end
+gem 'sqlite3'
+gem 'pg', '~> 0.21'
+gem 'mysql2', '~> 0.4.10'
 
+group :development, :test do
+  gem 'i18n-tasks', '~> 0.9' if branch == 'master'
+end
 
 gemspec
